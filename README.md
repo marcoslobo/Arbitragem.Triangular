@@ -2,6 +2,7 @@
 
 1. Modificado para .net core; (perfomance + linux)
 2. Modificado chaves da binance para variáveis de ambiente
+3. Dockerfile gerado
 
 Para executar:
 na pasta do Program.cs executar em uma linha de comando**(como administrador)**
