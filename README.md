@@ -1,6 +1,7 @@
 # Arbitragem.Triangular
 
 -> Modificado para .net core; (perfomance + linux)
+
 -> Modificado chaves da binance para variáveis de ambiente
 
 Para executar:
