@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Arbitragem.Triangular": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

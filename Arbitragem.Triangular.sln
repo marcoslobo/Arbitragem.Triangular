@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbitragem.Triangular", "Arbitragem.Triangular\Arbitragem.Triangular.csproj", "{DB725F0A-0320-4C89-A37E-3FE312E1A583}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {268C603D-9FDD-4696-ABD5-98248A9E0E2E}
+	EndGlobalSection
+EndGlobal
