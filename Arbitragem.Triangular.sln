@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29025.244
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbitragem.Triangular", "Arbitragem.Triangular\Arbitragem.Triangular.csproj", "{DB725F0A-0320-4C89-A37E-3FE312E1A583}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Arbitragem.Triangular", "Arbitragem.Triangular\Arbitragem.Triangular.csproj", "{DB725F0A-0320-4C89-A37E-3FE312E1A583}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arbitragem.Triangular.Test", "Arbitragem.Triangular.Test\Arbitragem.Triangular.Test.csproj", "{3C1F864B-2C24-47B7-B414-AF697EA7F7BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB725F0A-0320-4C89-A37E-3FE312E1A583}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C1F864B-2C24-47B7-B414-AF697EA7F7BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C1F864B-2C24-47B7-B414-AF697EA7F7BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C1F864B-2C24-47B7-B414-AF697EA7F7BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C1F864B-2C24-47B7-B414-AF697EA7F7BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

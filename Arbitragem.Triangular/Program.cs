@@ -1,5 +1,6 @@
 ﻿using Binance.Net;
 using Binance.Net.Objects;
+using CryptoExchange.Net.Objects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -249,6 +250,7 @@ namespace Arbitragem.Triangular
 
             Key.key = Environment.GetEnvironmentVariable("binanceApiKey");
             Key.secret = Environment.GetEnvironmentVariable("binanceApiSecret");
+
             initialValue = decimal.Parse(jContainer["initialValue"].ToString(), System.Globalization.NumberStyles.Float);
             percValue = decimal.Parse(jContainer["percValue"].ToString(), System.Globalization.NumberStyles.Float);
         }
@@ -486,28 +488,39 @@ namespace Arbitragem.Triangular
                         Console.WriteLine(" -- -- BAITING THE FISH!! -- -- ");
                         lock (objLockOrders)
                         {
-                            string jason = "";
                             if (pairs[2] == "ETHBTC" || pairs[2] == "BNBBTC")
                             {
-                                jason = exchangeBinance.orderMarket("buy", pairs[0], ret.amount1, false, true);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason.IndexOf("FILLED"));
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
+                                WebCallResult<BinancePlacedOrder> resultBuy;
+                                using (var bClient = new BinanceClient(options: new BinanceClientOptions() { RequestTimeout = TimeSpan.FromSeconds(3) }))
+                                {
+                                    bClient.SetApiCredentials(Environment.GetEnvironmentVariable("binanceApiKey"), Environment.GetEnvironmentVariable("binanceApiSecret"));
 
-                                if (jason.IndexOf("FILLED") >= 0)
+                                    Console.WriteLine($" VOU EXECUTAR O BCLIENT PLACE ORDER VALOR :{ret.amount1}");
+
+                                    resultBuy = bClient.PlaceOrder(pairs[0], OrderSide.Buy, OrderType.Market, ret.amount1);
+                                }
+
+                                //var resultBuy = binanceClient.PlaceOrder(pairs[0], OrderSide.Buy, OrderType.Market, ret.amount1);
+                                Logger.log($"Tentativa de Primeira compra {pairs[0]}, {ret.amount1}");
+
+                                if (resultBuy.Success)
                                 {
                                     Console.WriteLine("|| -- -- FIRST ACT COMPLETE!!! -- -- >>");
-                                    jason = exchangeBinance.orderMarket("sell", pairs[1], ret.amount1, false, true);
-                                    if (jason.IndexOf("FILLED") >= 0)
+                                    Logger.log($"Primeira compra com sucesso!");
+
+                                    var resultSell = binanceClient.PlaceOrder(pairs[1], OrderSide.Sell, OrderType.Market, ret.amount1);
+                                    Logger.log($"Tentativa de Primeira Venda {pairs[1]}, {ret.amount1}");
+
+                                    if (resultSell.Success)
                                     {
                                         Console.WriteLine("|| -- -- SECOND ACT COMPLETE!!! -- -- >>");
-                                        jason = exchangeBinance.orderMarket("sell", pairs[2], ret.amount2);
-                                        if (jason.IndexOf("FILLED") >= 0)
+
+                                        Logger.log($"Segunda venda com sucesso!");
+
+                                        var resultSell2 = binanceClient.PlaceOrder(pairs[2], OrderSide.Sell, OrderType.Market, ret.amount2);
+
+                                        Logger.log($"Tentativa de Segunda Venda {pairs[2]}, {ret.amount2}");
+                                        if (resultSell2.Success)
                                         {
                                             String obs = pairs[2].Replace("BTC", "") + " | " + ret.perc + Environment.NewLine +
                                             "Buy " + pairs[0] + "  " + ret.amount1 + "  " + Environment.NewLine +
@@ -532,31 +545,42 @@ namespace Arbitragem.Triangular
                                 }
                                 else
                                 {
+                                    Logger.log($"Error ao  tentar comprar 1x: {resultBuy.Error}");
                                     Console.WriteLine("|| -- -- FIRST ACT FAIL!!! -- -- \\");
+                                    Console.WriteLine($"Error: {resultBuy.Error}");
                                     break;
                                 }
                             }
                             else if (pairs[2] == "BTCUSDT" || pairs[2] == "BTCPAX")
                             {
-                                jason = exchangeBinance.orderMarket("buy", pairs[0], ret.amount1, false, true);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason.IndexOf("FILLED"));
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                if (jason.IndexOf("FILLED") >= 0)
+                                WebCallResult<BinancePlacedOrder> resultBuy;
+                                using (var bClient = new BinanceClient(options: new BinanceClientOptions() { RequestTimeout = TimeSpan.FromSeconds(3) }))
+                                {
+                                    bClient.SetApiCredentials(Environment.GetEnvironmentVariable("binanceApiKey"), Environment.GetEnvironmentVariable("binanceApiSecret"));
+
+                                    Console.WriteLine($" VOU EXECUTAR O BCLIENT PLACE ORDER VALOR :{ret.amount1}");
+
+                                    resultBuy = bClient.PlaceOrder(pairs[0], OrderSide.Buy, OrderType.Market, ret.amount1);
+                                }
+                                Logger.log($"Tentativa de Primeira compra {pairs[0]}, {ret.amount1}");
+
+                                if (resultBuy.Success)
                                 {
                                     Console.WriteLine("|| -- -- FIRST ACT COMPLETE!!! -- -- >>");
-                                    Console.WriteLine(jason.IndexOf("FILLED"));
-                                    jason = exchangeBinance.orderMarket("sell", pairs[1], ret.amount1, false, true);
-                                    if (jason.IndexOf("FILLED") >= 0)
+                                    Logger.log($"Primeira compra com sucesso!");
+
+                                    var resultSell = binanceClient.PlaceOrder(pairs[1], OrderSide.Sell, OrderType.Market, ret.amount1);
+                                    Logger.log($"Tentativa de Primeira Venda {pairs[1]}, {ret.amount1}");
+
+                                    if (resultSell.Success)
                                     {
                                         Console.WriteLine("|| -- -- SECOND ACT COMPLETE!!! -- -- >>");
-                                        jason = exchangeBinance.orderMarket("sell", pairs[2], ret.amount2);
-                                        if (jason.IndexOf("FILLED") >= 0)
+                                        Logger.log($"Segunda venda com sucesso!");
+
+                                        var resultSell2 = binanceClient.PlaceOrder(pairs[2], OrderSide.Sell, OrderType.Market, ret.amount2);
+                                        Logger.log($"Tentativa de Segunda Venda {pairs[2]}, {ret.amount2}");
+
+                                        if (resultSell2.Success)
                                         {
                                             String obs = pairs[2].Replace("BTC", "") + " | " + ret.perc + Environment.NewLine +
                                             "Buy " + pairs[0] + "  " + ret.amount1 + "  " + Environment.NewLine +
@@ -569,43 +593,57 @@ namespace Arbitragem.Triangular
                                         }
                                         else
                                         {
+                                            Logger.log($"Error To Final Sell: {resultSell2.Error}");
+
+                                            Console.WriteLine($"Error: {resultSell2.Error}");
                                             Console.WriteLine("|| -- -- FINAL FISHING FAIL!!! -- -- >>");
                                             break;
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine("|| -- -- SECOND ACT FAIL!!! -- -- >>");
+                                        Logger.log($"Error ao  tentar Vender 1x: {resultSell.Error}");
+                                        Console.WriteLine("|| -- -- SECOND ACT FAIL!!! -- -- \\");
+                                        Console.WriteLine($"Error: {resultSell.Error}");
                                         break;
                                     }
                                 }
                                 else
                                 {
+                                    Logger.log($"Error ao  tentar comprar 1x: {resultBuy.Error}");
                                     Console.WriteLine("|| -- -- FIRST ACT FAIL!!! -- -- \\");
+                                    Console.WriteLine($"Error: {resultBuy.Error}");
                                     break;
                                 }
                             }
                             else
                             {
-                                jason = exchangeBinance.orderMarket("buy", pairs[0], ret.amount1, false, true);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason.IndexOf("FILLED"));
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine(jason);
-                                Console.WriteLine("                --------------------");
-                                Console.WriteLine("                --------------------");
-                                if (jason.IndexOf("FILLED") >= 0)
+                                WebCallResult<BinancePlacedOrder> resultBuy;
+                                using (var bClient = new BinanceClient(options: new BinanceClientOptions() { RequestTimeout = TimeSpan.FromSeconds(3) }))
+                                {
+                                    Console.WriteLine($" VOU EXECUTAR O BCLIENT PLACE ORDER VALOR :{ret.amount1}");
+
+                                    bClient.SetApiCredentials(Environment.GetEnvironmentVariable("binanceApiKey"), Environment.GetEnvironmentVariable("binanceApiSecret"));
+                                    resultBuy = bClient.PlaceOrder(pairs[0], OrderSide.Buy, OrderType.Market, ret.amount1);
+                                }
+                                Logger.log($"Tentativa de Primeira compra {pairs[0]}, {ret.amount1}");
+                                if (resultBuy.Success)
                                 {
                                     Console.WriteLine("|| -- -- FIRST ACT COMPLETE!!! -- -- >>");
-                                    Console.WriteLine(jason.IndexOf("FILLED"));
-                                    jason = exchangeBinance.orderMarket("sell", pairs[1], ret.amount1, false, true);
-                                    if (jason.IndexOf("FILLED") >= 0)
+                                    Logger.log($"Primeira compra com sucesso!");
+
+                                    var resultSell = binanceClient.PlaceOrder(pairs[1], OrderSide.Sell, OrderType.Market, ret.amount1);
+                                    Logger.log($"Tentativa de Primeira Venda {pairs[1]}, {ret.amount1}");
+
+                                    if (resultSell.Success)
                                     {
                                         Console.WriteLine("|| -- -- SECOND ACT COMPLETE!!! -- -- >>");
-                                        jason = exchangeBinance.orderMarket("sell", pairs[2], ret.amount2);
-                                        if (jason.IndexOf("FILLED") >= 0)
+                                        Logger.log($"Segunda venda com sucesso!");
+
+                                        var resultSell2 = binanceClient.PlaceOrder(pairs[2], OrderSide.Sell, OrderType.Market, ret.amount2);
+
+                                        Logger.log($"Tentativa de Segunda Venda {pairs[2]}, {ret.amount2}");
+                                        if (resultSell2.Success)
                                         {
                                             String obs = pairs[2].Replace("BTC", "") + " | " + ret.perc + Environment.NewLine +
                                             "Buy " + pairs[0] + "  " + ret.amount1 + "  " + Environment.NewLine +
@@ -618,19 +656,25 @@ namespace Arbitragem.Triangular
                                         }
                                         else
                                         {
-                                            Console.WriteLine("|| -- -- FINAL FISHING FAIL!!! -- -- >>");
+                                            Logger.log($"Error ao  tentar vender 2x: {resultSell2.Error}");
+                                            Console.WriteLine("|| -- -- FINAL ACT FAIL!!! -- -- \\");
+                                            Console.WriteLine($"Error: {resultSell2.Error}");
                                             break;
                                         }
                                     }
                                     else
                                     {
-                                        Console.WriteLine("|| -- -- SECOND ACT FAIL!!! -- -- >>");
+                                        Logger.log($"Error ao  tentar vender 1x: {resultSell.Error}");
+                                        Console.WriteLine("|| -- -- SECOND ACT FAIL!!! -- -- \\");
+                                        Console.WriteLine($"Error: {resultSell.Error}");
                                         break;
                                     }
                                 }
                                 else
                                 {
+                                    Logger.log($"Error ao  tentar comprar 1x: {resultBuy.Error}");
                                     Console.WriteLine("|| -- -- FIRST ACT FAIL!!! -- -- \\");
+                                    Console.WriteLine($"Error: {resultBuy.Error}");
                                     break;
                                 }
                             }
@@ -668,13 +712,13 @@ namespace Arbitragem.Triangular
                     //EOSBTC SELL
 
                     //BUY
-                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 8);
+                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 4);
 
                     //CHANGE
-                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "bids", "sell", false), 8);
+                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "bids", "sell", false), 4);
 
                     //SELL
-                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "bids", "sell", false), 8);
+                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "bids", "sell", false), 4);
 
                     //Report
                     decimal perc = Math.Round((((arbTriangle.finalvalue * 100) / initialValue) - 100), 5);
@@ -693,13 +737,13 @@ namespace Arbitragem.Triangular
                     //BTCUSDT BUY
 
                     //BUY
-                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 8);
+                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 4);
 
                     //CHANGE
-                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "bids", "sell", false), 8);
+                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "bids", "sell", false), 4);
 
                     //SELL
-                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "asks", "buy"), 8);
+                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "asks", "buy"), 4);
 
                     //Report
                     decimal perc = Math.Round((((arbTriangle.finalvalue * 100) / initialValue) - 100), 5);
@@ -719,13 +763,13 @@ namespace Arbitragem.Triangular
                     //XRPBTC SELL
 
                     //BUY
-                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 8);
+                    arbTriangle.amount1 = Math.Round(exchangeBinance.getBook(pairs[0], initialValue, "asks", "buy"), 4);
 
                     //CHANGE
-                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "asks", "buy"), 8);
+                    arbTriangle.amount2 = Math.Round(exchangeBinance.getBook(pairs[1], arbTriangle.amount1, "asks", "buy"), 4);
 
                     //SELL
-                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "bids", "sell", false), 8);
+                    arbTriangle.finalvalue = Math.Round(exchangeBinance.getBook(pairs[2], arbTriangle.amount2, "bids", "sell", false), 4);
 
                     //Report
                     decimal perc = Math.Round((((arbTriangle.finalvalue * 100) / initialValue) - 100), 5);
